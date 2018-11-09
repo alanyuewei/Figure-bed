@@ -4,27 +4,34 @@
  * @author 皮皮赖(https://www.52bz.la)
  */
 
-function uploadToSogou($file)
+function uploadToSogou($file,$size)
 {
-    //接口地址
-    $UploadUrl = 'http://pic.sogou.com/pic/upload_pic.jsp?r=' . rand(10000, 99999);
-    //取出临时目录上传的文件
-    $curlPost['pic_path'] = new \CurlFile($file);
-    //模拟上传开始
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $UploadUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_POST, 1); //POST提交
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-    $data = curl_exec($ch);
-    curl_close($ch);
-    if (empty($data)) {
-        return "404";
+
+    if (isset($file)) {
+        $fp = fopen($file,"r");
+        $img = base64_encode(fread($fp,$size));
+    }else{
+        return array("404");
     }
-    return $data;
+    $img = base64_decode($img);
+    $data = base64_decode("LS0tLS0tV2ViS2l0Rm9ybUJvdW5kYXJ5R0xmR0IwSGdVTnRwVFQxaw0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwaWNfcGF0aCI7IGZpbGVuYW1lPSIxMS5wbmciDQpDb250ZW50LVR5cGU6IGltYWdlL3BuZw0KDQo=").$img.base64_decode("DQotLS0tLS1XZWJLaXRGb3JtQm91bmRhcnlHTGZHQjBIZ1VOdHBUVDFrLS0NCg==");
+    $url = "http://pic.sogou.com/pic/upload_pic.jsp";
+    $ch = curl_init();
+    $headers=array(
+        "Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryGLfGB0HgUNtpTT1k",
+        "Content-Length: ".strlen($data)
+    );
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    $result=curl_exec($ch);
+    curl_close($ch);
+    return $result;
 }
 
 function SougouHttps($url)
 {
     return str_replace('http', 'https', $url);
 }
+

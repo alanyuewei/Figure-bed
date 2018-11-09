@@ -5,7 +5,7 @@
  * Date: 2018/11/6
  * Time: 14:11
  */
-
+session_start();
 //设置时区
 date_default_timezone_set("PRC");
 //引入配置文件
@@ -43,8 +43,17 @@ if ($_POST['tuchuang'] == 'baidu') {
 } else if ($_POST['tuchuang'] == 'Sougou') {
     //引入搜狗核心函数
     include './core/SougouFunctions.php';
-    $str = uploadToSogou($_FILES['pic']['tmp_name']);
+    $str = uploadToSogou($_FILES['pic']['tmp_name'], $_FILES['pic']['size']);
     $image = $_POST['xieyi'] == 'http' ? $str : SougouHttps($str);
+} else if ($_POST['tuchuang'] == 'liantuyun') {
+    //引入链云图核心函数
+    include './core/LiantuyunFunctions.php';
+    $image = uploadToQihu($_FILES['pic']['tmp_name']);
+} else if ($_POST['tuchuang'] == 'SmMs') {
+    //引入链云图核心函数
+    include './core/SmMsFunctions.php';
+    $str = uploadToSmMs($_FILES);
+    $image = $_POST['xieyi'] != 'http' ? $str : SmMsHttps($str);
 } else {
     $str = upload($_FILES['pic']['tmp_name'], $cookie);
     //格式化返回json数据
@@ -53,7 +62,7 @@ if ($_POST['tuchuang'] == 'baidu') {
 }
 
 if ($image == '404' && !empty($_FILES)) {
-    die( '<script>alert("上传失败请重试！");window.location.href="index.php";</script>');
+    die('<script>alert("上传失败请重试！");window.location.href="index.php";</script>');
 }
 
 ?>
@@ -68,6 +77,7 @@ if ($image == '404' && !empty($_FILES)) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo $title; ?></title>
     <link rel="stylesheet" href="https://css.letvcdn.com/lc04_yinyue/201612/19/20/00/bootstrap.min.css">
+    <link rel="icon" type="image/ico" href="https://q.qlogo.cn/g?b=qq&amp;nk=369994633&amp;s=100">
     <style>
         .panel {
             border: none;
@@ -100,17 +110,22 @@ if ($image == '404' && !empty($_FILES)) {
                             <input type="file" name="pic" class="btn btn-default">
                             <?php if ($image != 404) {
                                 echo '<br>图片链接：<input type="text" value="' . $image . '"><a id="copy-btn" data-clipboard-text="' . $image . '" class="btn btn-success btn-sm">一键复制</a><hr><img src="' . $image . '" width="90%">';
+                            } else {
+                                echo '<br>图片链接：<input type="text" value="https://www.52bz.la/"><a id="copy-btn" data-clipboard-text="https://ws2.sinaimg.cn/large/006Xmmmgly1fvl8cjxeszj31hc0u0ama.jpg" class="btn btn-success btn-sm">一键复制</a><hr><img src="https://ws2.sinaimg.cn/large/006Xmmmgly1fvl8cjxeszj31hc0u0ama.jpg" width="90%">';
                             } ?>
                     </center>
             </div>
             <div class="panel-footer text-center">
                 <!-- <input type="" name="num" id="num" style="display:none" /> -->
-                图床：<label><input name="tuchuang" type="radio" value="Sina" id="Sina"/>新浪 </label>
-                <label><input name="tuchuang" type="radio" value="baidu" id="baidu"/>百度 </label>
-                <label><input name="tuchuang" type="radio" value="Sougou" id="Sougou">搜狗 </label><br/>
+                图床：<label><input name="tuchuang" type="radio" value="Sina" id="Sina" onclick="yeshttps()"/>新浪 </label>
+                <label><input name="tuchuang" type="radio" value="baidu" id="baidu" onclick="yeshttps()"/>百度 </label>
+                <label><input name="tuchuang" type="radio" value="Sougou" id="Sougou" onclick="yeshttps()">搜狗 </label>
+                <label><input name="tuchuang" type="radio" value="SmMs" id="SmMs" onclick="yeshttps()">SmMs</label>
+                <label><input name="tuchuang" type="radio" value="liantuyun" id="liantuyun" onclick="nohttps()">链图云</label>
+                <br/>
 
-                协议：<label><input name="xieyi" type="radio" value="http"/>http </label>
-                <label><input name="xieyi" type="radio" value="https" checked="checked"/>https </label> <br/>
+                协议：<label><input name="xieyi" type="radio" id="http" value="http"/>http </label>
+                <label><input name="xieyi" type="radio" id="https" value="https" checked="checked"/>https </label> <br/>
                 <input type="submit" value="开始上传" class="btn btn-primary">
                 </form>
             </div>
@@ -129,24 +144,33 @@ if ($image == '404' && !empty($_FILES)) {
         layer.msg('复制失败，请长按链接后手动复制！');
     });
 
-    // var input = document.getElementById("num");
-    // input.value=Math.round(Math.random()*2);
-    var nums = Math.round(Math.random() * 2);
-    if (nums == 0) {
-        var Sina = document.getElementById("Sina");
-        Sina.checked = "checked";
+
+    <?php
+    if (isset($_SESSION['index'])) {
+        if ($_SESSION['index'] < time()) {
+            unset($_SESSION['index']);
+
+        }
+    }
+    if (empty($_SESSION['index'])) {
+        echo 'layer.alert("' . $gogao . '", {icon: 7})';
+        $_SESSION['index'] = time() + 360;
+    }
+    ?>
+
+    var nums = <?php echo rand(0, 3); ?>;
+    nums > 2 ? document.getElementById("Sougou").checked = "checked" : (nums > 1 ? document.getElementById("baidu").checked = "checked" : (nums>0 ? document.getElementById("Sina").checked = "checked" : document.getElementById("SmMs").checked = "checked"))
+
+    function nohttps() {
+        document.getElementById('https').disabled = true;
+        document.getElementById('http').checked = "checked";
     }
 
-    if (nums == 1) {
-        var baidu = document.getElementById("baidu");
-        baidu.checked = "checked";
+    function yeshttps() {
+        document.getElementById('https').disabled = false;
+        document.getElementById('https').checked = "checked";
     }
 
-    if (nums == 2) {
-        var Sougou = document.getElementById("Sougou");
-        Sougou.checked = "checked";
-
-    }
 </script>
 <center>© <?php echo date("Y", time()); ?> <?php echo $copy; ?></center>
 <style>#circle {
