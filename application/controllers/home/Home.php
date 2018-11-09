@@ -11,9 +11,6 @@ class Home extends Api
 {
     public function index()
     {
-        $this->load->library('porn');
-        $cs = $this->porn->updata();
-        die($cs);
         session_start();
         $jumpapi = strtolower($this->input->post('tuchuang'));
         if (!empty($jumpapi)) {
