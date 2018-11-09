@@ -1,369 +1,315 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: 烟雨寒云(https://www.yyhy.me/) | 皮皮赖(https://www.52bz.la)
- * Date: 2018/11/6
- * Time: 14:11
+ * CodeIgniter
+ *
+ * An open source application development framework for PHP
+ *
+ * This content is released under the MIT License (MIT)
+ *
+ * Copyright (c) 2014 - 2018, British Columbia Institute of Technology
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @package	CodeIgniter
+ * @author	EllisLab Dev Team
+ * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
+ * @copyright	Copyright (c) 2014 - 2018, British Columbia Institute of Technology (http://bcit.ca/)
+ * @license	http://opensource.org/licenses/MIT	MIT License
+ * @link	https://codeigniter.com
+ * @since	Version 1.0.0
+ * @filesource
  */
-session_start();
-//设置时区
-date_default_timezone_set("PRC");
-//引入配置文件
-include './core/config.php';
-//引入公共类
-include './function/PublicFunctions.php';
-//引入新浪核心函数
-include './function/SinaFunctions.php';
-//访问一次更新一次cookie
-$res['time'] = date("H", time());
-$res['cookie'] = login($u, $p);
-$file = '<?php $cookie = "' . $res['cookie'] . '";$time = "' . $res['time'] . '";';
-file_put_contents('./core/cookie.php', $file);
 
-//引入cookie信息文件
-include './core/cookie.php';
-//获取当前小时
-$dqtime = date("H", time());
-//判断cookie信息文件中的时间距离当前相差多少，超过10小时重新进行登录获取cookie信息并更新文件
-if (($time - $dqtime) > 10) {
-    $res['time'] = date("H", time());
-    $res['cookie'] = login($u, $p);
-    $file = '<?php $cookie = "' . $res['cookie'] . '";$time = "' . $res['time'] . '"; ?>';
-    file_put_contents('./core/cookie.php', $file);
-}
-//判断上传文件类型
-if ($_FILES && !in_array(array_pop(explode(".", $_FILES['pic']['name'])), $allowtype)) {
-    die('<script>alert("您上传的文件类型不是图片或被管理员禁止！");window.location.href="index.php";</script>');
-}
-//进行上传
-if ($_POST['tuchuang'] == 'baidu') {
-    //引入百度核心函数
-    include './function/BaiduFunctions.php';
-    $str = uploadToBaidu($_FILES['pic']['tmp_name']);
-    $image = $_POST['xieyi'] == 'http' ? $str : BaiduHttps($str);
-} else if ($_POST['tuchuang'] == 'Sougou') {
-    //引入搜狗核心函数
-    include './function/SougouFunctions.php';
-    $str = uploadToSogou($_FILES['pic']['tmp_name'], $_FILES['pic']['size']);
-    $image = $_POST['xieyi'] == 'http' ? $str : ssl($str);
-} else if ($_POST['tuchuang'] == 'liantuyun') {
-    //引入链云图核心函数
-    include './function/LiantuyunFunctions.php';
-    $image = uploadToQihu($_FILES['pic']['tmp_name']);
-} else if ($_POST['tuchuang'] == 'SmMs') {
-    //引入SmMs核心函数
-    include './function/SmMsFunctions.php';
-    $str = uploadToSmMs($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
-} else if ($_POST['tuchuang'] == 'Dumpt') {
-    //引入Dump核心函数
-    include './function/DumptFunctions.php';
-    $str = uploadToDumpt($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
-} else if ($_POST['tuchuang'] == 'Prnt') {
-    //引入Prnt核心函数
-    include './function/PrntFunctions.php';
-    $str = uploadToPrnt($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
-} else if ($_POST['tuchuang'] == 'ooxx') {
-    //引入Ooxx核心函数
-    include './function/OoxxFunctions.php';
-    $str = uploadToOoxx($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
-} else if ($_POST['tuchuang'] == 'qihu') {
-    //引入奇虎核心函数
-    include './function/QihuFunctions.php';
-    $str = uploadToQihu($_FILES);
-    //var_dump($str);die;
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
-}else if ($_POST['tuchuang'] == 'renmin') {
-    //引入人民网核心函数
-    include './function/RenMinFunctions.php';
-    $str = uploadTorenmin($_FILES);
-    var_dump($str);die;
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
-}  else {
-    $str = upload($_FILES['pic']['tmp_name'], $cookie);
-    //格式化返回json数据
-    $img = json_decode(($str), true);
-    $image = $_POST['xieyi'] == 'https' ? getImageUrl($img['data']['pics']['pic_1']['pid']) : getImageUrl($img['data']['pics']['pic_1']['pid'], 0, 0);
+/*
+ *---------------------------------------------------------------
+ * APPLICATION ENVIRONMENT
+ *---------------------------------------------------------------
+ *
+ * You can load different configurations depending on your
+ * current environment. Setting the environment also influences
+ * things like logging and error reporting.
+ *
+ * This can be set to anything, but default usage is:
+ *
+ *     development
+ *     testing
+ *     production
+ *
+ * NOTE: If you change these, also change the error_reporting() code below
+ */
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+
+/*
+ *---------------------------------------------------------------
+ * ERROR REPORTING
+ *---------------------------------------------------------------
+ *
+ * Different environments will require different levels of error reporting.
+ * By default development will show errors but testing and live will hide them.
+ */
+switch (ENVIRONMENT)
+{
+	case 'development':
+		error_reporting(-1);
+		ini_set('display_errors', 0);
+	break;
+
+	case 'testing':
+	case 'production':
+		ini_set('display_errors', 0);
+		if (version_compare(PHP_VERSION, '5.3', '>='))
+		{
+			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+		}
+		else
+		{
+			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
+		}
+	break;
+
+	default:
+		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+		echo 'The application environment is not set correctly.';
+		exit(1); // EXIT_ERROR
 }
 
-if ($image == '404' && !empty($_FILES)) {
-    die('<script>alert("上传失败请重试！");window.location.href="index.php";</script>');
-}
+/*
+ *---------------------------------------------------------------
+ * SYSTEM DIRECTORY NAME
+ *---------------------------------------------------------------
+ *
+ * This variable must contain the name of your "system" directory.
+ * Set the path if it is not in the same directory as this file.
+ */
+	$system_path = 'system';
 
-?>
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta name="referrer" content="never">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="<?php echo $description; ?>"/>
-    <meta name="keywords" content="<?php echo $keywords; ?>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $title; ?></title>
-    <link rel="stylesheet" href="https://css.letvcdn.com/lc04_yinyue/201612/19/20/00/bootstrap.min.css">
-    <link rel="icon" type="image/ico" href="https://q.qlogo.cn/g?b=qq&amp;nk=369994633&amp;s=100">
-    <style>
-        .panel {
-            border: none;
-            border-radius: 10px;
-        }
+/*
+ *---------------------------------------------------------------
+ * APPLICATION DIRECTORY NAME
+ *---------------------------------------------------------------
+ *
+ * If you want this front controller to use a different "application"
+ * directory than the default one you can set its name here. The directory
+ * can also be renamed or relocated anywhere on your server. If you do,
+ * use an absolute (full) server path.
+ * For more info please see the user guide:
+ *
+ * https://codeigniter.com/user_guide/general/managing_apps.html
+ *
+ * NO TRAILING SLASH!
+ */
+	$application_folder = 'application';
 
-        .panel {
-            box-shadow: 1px 1px 5px 5px rgba(169, 169, 169, 0.35);
-            -moz-box-shadow: 1px 1px 5px 5px rgba(169, 169, 169, 0.35);
-        }
-    </style>
-</head>
-<body background="https://ww2.sinaimg.cn/large/a15b4afegy1fpp139ax3wj200o00g073.jpg" style="height: 100%">
-<div class="container" style="padding-top:55px;">
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 center-block text-center" style="float: none;">
-        <div class="panel panel-primary">
-            <div class="panel-heading" style="background: linear-gradient(to right,#8ae68a,#5ccdde,#b221ff);"><font
-                        color="#000000">选择或拖拽一张图片开始上传...</font></div>
-            <div class="panel-body text-center">
-                <form action="index.php" method="post" enctype="multipart/form-data">
-                    <center>
-                        <a href="http://wpa.qq.com/msgrd?v=3&uin=<?php echo $zzqq; ?>&site=qq&menu=yes"><img
-                                    class="img-circle m-b-xs"
-                                    style="border: 2px solid #1281FF; margin-left:3px; margin-right:3px;"
-                                    src="https://q4.qlogo.cn/headimg_dl?dst_uin=<?php echo $zzqq; ?>&spec=100" ;
-                                    width="60px" height="60px" alt="<?php echo $title; ?>"></a>
-                        <p>
-                            <font color="success"><?php echo $title; ?></font>
-                        <p>
-                            <input type="file" name="pic" class="btn btn-default">
-                            <?php if ($image != 404) {
-                                echo '<br>图片链接：<input type="text" value="' . $image . '"><a id="copy-btn" data-clipboard-text="' . $image . '" class="btn btn-success btn-sm">一键复制</a><hr><img src="' . $image . '" width="90%">';
-                            } else {
-                                echo '<br>图片链接：<input type="text" value="https://www.52bz.la/"><a id="copy-btn" data-clipboard-text="https://ws2.sinaimg.cn/large/006Xmmmgly1fvl8cjxeszj31hc0u0ama.jpg" class="btn btn-success btn-sm">一键复制</a><hr><img src="https://ws2.sinaimg.cn/large/006Xmmmgly1fvl8cjxeszj31hc0u0ama.jpg" width="90%">';
-                            } ?>
-                    </center>
-            </div>
-            <div class="panel-footer text-center">
-                <!-- <input type="" name="num" id="num" style="display:none" /> -->
-                图床：<label><input name="tuchuang" type="radio" value="Sina" id="Sina" onclick="yeshttps()"/>新浪 </label>
-                <label><input name="tuchuang" type="radio" value="baidu" id="baidu" onclick="yeshttps()"/>百度 </label>
-                <label><input name="tuchuang" type="radio" value="Sougou" id="Sougou" onclick="yeshttps()">搜狗 </label>
-                <label><input name="tuchuang" type="radio" value="qihu" id="qihu" onclick="yeshttps()" disabled = false>奇虎 </label>
-                <label><input name="tuchuang" type="radio" value="SmMs" id="SmMs" onclick="yeshttps()">SmMs</label>
-                <label><input name="tuchuang" type="radio" value="liantuyun" id="liantuyun"
-                              onclick="nohttps()">链图云</label>
-                <label><input name="tuchuang" type="radio" value="renmin" id="renmin"
-                              onclick="nohttps()">人民网</label>
-                <label><input name="tuchuang" type="radio" value="ooxx" id="ooxx" onclick="yeshttps()">OoXx</label>
-                <label><input name="tuchuang" type="radio" value="Dumpt" id="Dumpt" onclick="yeshttps()">Dumpt</label>
-                <label><input name="tuchuang" type="radio" value="Prnt" id="Prnt" onclick="yeshttps()">Prnt</label>
-                <br/>
-                协议：<label><input name="xieyi" type="radio" id="http" value="http"/>http </label>
-                <label><input name="xieyi" type="radio" id="https" value="https" checked="checked"/>https </label> <br/>
-                <input type="submit" value="开始上传" class="btn btn-primary">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="//cdn.bootcss.com/layer/2.3/layer.js"></script>
-<script src="//lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js"></script>
-<script>
-    var clipboard = new Clipboard('#copy-btn');
-    clipboard.on('success', function (e) {
-        layer.msg('复制成功！');
-    });
-    clipboard.on('error', function (e) {
-        layer.msg('复制失败，请长按链接后手动复制！');
-    });
+/*
+ *---------------------------------------------------------------
+ * VIEW DIRECTORY NAME
+ *---------------------------------------------------------------
+ *
+ * If you want to move the view directory out of the application
+ * directory, set the path to it here. The directory can be renamed
+ * and relocated anywhere on your server. If blank, it will default
+ * to the standard location inside your application directory.
+ * If you do move this, use an absolute (full) server path.
+ *
+ * NO TRAILING SLASH!
+ */
+	$view_folder = '';
 
 
-    <?php
-    if (isset($_SESSION['index'])) {
-        if ($_SESSION['index'] < time()) {
-            unset($_SESSION['index']);
+/*
+ * --------------------------------------------------------------------
+ * DEFAULT CONTROLLER
+ * --------------------------------------------------------------------
+ *
+ * Normally you will set your default controller in the routes.php file.
+ * You can, however, force a custom routing by hard-coding a
+ * specific controller class/function here. For most applications, you
+ * WILL NOT set your routing here, but it's an option for those
+ * special instances where you might want to override the standard
+ * routing in a specific front controller that shares a common CI installation.
+ *
+ * IMPORTANT: If you set the routing here, NO OTHER controller will be
+ * callable. In essence, this preference limits your application to ONE
+ * specific controller. Leave the function name blank if you need
+ * to call functions dynamically via the URI.
+ *
+ * Un-comment the $routing array below to use this feature
+ */
+	// The directory name, relative to the "controllers" directory.  Leave blank
+	// if your controller is not in a sub-directory within the "controllers" one
+	// $routing['directory'] = '';
 
-        }
-    }
-    if (empty($_SESSION['index'])) {
-        echo 'layer.alert("' . $gogao . '", {icon: 7})';
-        $_SESSION['index'] = time() + 360;
-    }
-    ?>
+	// The controller class file name.  Example:  mycontroller
+	// $routing['controller'] = '';
 
-    var nums = <?php echo rand(0, 3); ?>;
-    nums > 2 ? document.getElementById("Sougou").checked = "checked" : (nums > 1 ? document.getElementById("baidu").checked = "checked" : (nums > 0 ? document.getElementById("Sina").checked = "checked" : document.getElementById("SmMs").checked = "checked"))
+	// The controller function you wish to be called.
+	// $routing['function']	= '';
 
-    function nohttps() {
-        document.getElementById('https').disabled = true;
-        document.getElementById('http').checked = "checked";
-    }
 
-    function yeshttps() {
-        document.getElementById('https').disabled = false;
-        document.getElementById('https').checked = "checked";
-    }
+/*
+ * -------------------------------------------------------------------
+ *  CUSTOM CONFIG VALUES
+ * -------------------------------------------------------------------
+ *
+ * The $assign_to_config array below will be passed dynamically to the
+ * config class when initialized. This allows you to set custom config
+ * items or override any default config values found in the config.php file.
+ * This can be handy as it permits you to share one application between
+ * multiple front controller files, with each file containing different
+ * config values.
+ *
+ * Un-comment the $assign_to_config array below to use this feature
+ */
+	// $assign_to_config['name_of_config_item'] = 'value of config item';
 
-</script>
-<center>© <?php echo date("Y", time()); ?> <?php echo $copy; ?></center>
-<style>#circle {
-        opacity: 0;
-        filter: alpha(opacity='0')
-        background-color: #ffffff;
-        border: 5px solid #FF0000;
-        opacity: .9;
-        border-right: 5px solid rgba(0, 0, 0, 0);
-        border-left: 5px solid rgba(0, 0, 0, 0);
-        border-radius: 50px;
-        box-shadow: 0 0 35px #FF0000;
-        width: 60px;
-        height: 60px;
-        margin: 0 auto;
-        position: fixed;
-        left: 30px;
-        bottom: 30px;
-        -moz-animation: spinPulse 1s infinite linear;
-        -webkit-animation: spinPulse 1s infinite linear;
-        -o-animation: spinPulse 1s infinite linear;
-        -ms-animation: spinPulse 1s infinite linear;
-    }
 
-    #circle1 {
-        opacity: 0;
-        filter: alpha(opacity='0')
-        background-color: #ffffff;
-        border: 6px solid #FF0000;
-        opacity: .9;
-        border-left: 6px solid rgba(0, 0, 0, 0);
-        border-right: 6px solid rgba(0, 0, 0, 0);
-        border-radius: 50px;
-        box-shadow: 0 0 15px #FF0000;
-        width: 40px;
-        height: 40px;
-        margin: 0 auto;
-        position: fixed;
-        left: 39px;
-        bottom: 39px;
-        -moz-animation: spinoffPulse 1s infinite linear;
-        -webkit-animation: spinoffPulse 1s infinite linear;
-        -o-animation: spinoffPulse 1s infinite linear;
-        -ms-animation: spinoffPulse 1s infinite linear;
-    }
 
-    #circletext {
-        opacity: 0;
-        filter: alpha(opacity='0')
-        width: 46px;
-        height: 20px;
-        margin: 0 auto;
-        position: fixed;
-        left: 46px;
-        bottom: 53px;
-        color: #F00
-    }
+// --------------------------------------------------------------------
+// END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE
+// --------------------------------------------------------------------
 
-    @-moz-keyframes spinPulse {
-        0% {
-            -moz-transform: rotate(160deg);
-            opacity: 0;
-            box-shadow: 0 0 1px #505050;
-        }
-        50% {
-            -moz-transform: rotate(145deg);
-            opacity: 1;
-        }
-        100% {
-            -moz-transform: rotate(-320deg);
-            opacity: 0;
-        }
-    }
+/*
+ * ---------------------------------------------------------------
+ *  Resolve the system path for increased reliability
+ * ---------------------------------------------------------------
+ */
 
-    @-moz-keyframes spinoffPulse {
-        0% {
-            -moz-transform: rotate(0deg);
-        }
-        100% {
-            -moz-transform: rotate(360deg);
-        }
-    }
+	// Set the current directory correctly for CLI requests
+	if (defined('STDIN'))
+	{
+		chdir(dirname(__FILE__));
+	}
 
-    @-webkit-keyframes spinPulse {
-        0% {
-            -webkit-transform: rotate(160deg);
-            opacity: 0;
-            box-shadow: 0 0 1px #505050;
-        }
-        50% {
-            -webkit-transform: rotate(145deg);
-            opacity: 1;
-        }
-        100% {
-            -webkit-transform: rotate(-320deg);
-            opacity: 0;
-        }
-    }
+	if (($_temp = realpath($system_path)) !== FALSE)
+	{
+		$system_path = $_temp.DIRECTORY_SEPARATOR;
+	}
+	else
+	{
+		// Ensure there's a trailing slash
+		$system_path = strtr(
+			rtrim($system_path, '/\\'),
+			'/\\',
+			DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+		).DIRECTORY_SEPARATOR;
+	}
 
-    @-webkit-keyframes spinoffPulse {
-        0% {
-            -webkit-transform: rotate(0deg);
-        }
-        100% {
-            -webkit-transform: rotate(360deg);
-        }
-    }
+	// Is the system path correct?
+	if ( ! is_dir($system_path))
+	{
+		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME);
+		exit(3); // EXIT_CONFIG
+	}
 
-    @-o-keyframes spinPulse {
-        0% {
-            -o-transform: rotate(160deg);
-            opacity: 0;
-            box-shadow: 0 0 1px #505050;
-        }
-        50% {
-            -o-transform: rotate(145deg);
-            opacity: 1;
-        }
-        100% {
-            -o-transform: rotate(-320deg);
-            opacity: 0;
-        }
-    }
+/*
+ * -------------------------------------------------------------------
+ *  Now that we know the path, set the main path constants
+ * -------------------------------------------------------------------
+ */
+	// The name of THIS file
+	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
-    @-o-keyframes spinoffPulse {
-        0% {
-            -o-transform: rotate(0deg);
-        }
-        100% {
-            -o-transform: rotate(360deg);
-        }
-    }
+	// Path to the system directory
+	define('BASEPATH', $system_path);
 
-    @-ms-keyframes spinPulse {
-        0% {
-            -ms-transform: rotate(160deg);
-            opacity: 0;
-            box-shadow: 0 0 1px #505050;
-        }
-        50% {
-            -ms-transform: rotate(145deg);
-            opacity: 1;
-        }
-        100% {
-            -ms-transform: rotate(-320deg);
-            opacity: 0;
-        }
-    }
+	// Path to the front controller (this file) directory
+	define('FCPATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
 
-    @-ms-keyframes spinoffPulse {
-        0% {
-            -ms-transform: rotate(0deg);
-        }
-        100% {
-            -ms-transform: rotate(360deg);
-        }
-    }</style>
-<div id="circle" style="opacity: 1;"></div>
-<div id="circletext" style="opacity: 1;"></div>
-<div id="circle1" style="opacity: 1;"></div>
-</body>
-</html>
+	// Name of the "system" directory
+	define('SYSDIR', basename(BASEPATH));
+
+	// The path to the "application" directory
+	if (is_dir($application_folder))
+	{
+		if (($_temp = realpath($application_folder)) !== FALSE)
+		{
+			$application_folder = $_temp;
+		}
+		else
+		{
+			$application_folder = strtr(
+				rtrim($application_folder, '/\\'),
+				'/\\',
+				DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+			);
+		}
+	}
+	elseif (is_dir(BASEPATH.$application_folder.DIRECTORY_SEPARATOR))
+	{
+		$application_folder = BASEPATH.strtr(
+			trim($application_folder, '/\\'),
+			'/\\',
+			DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+		);
+	}
+	else
+	{
+		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+		echo 'Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
+		exit(3); // EXIT_CONFIG
+	}
+
+	define('APPPATH', $application_folder.DIRECTORY_SEPARATOR);
+
+	// The path to the "views" directory
+	if ( ! isset($view_folder[0]) && is_dir(APPPATH.'views'.DIRECTORY_SEPARATOR))
+	{
+		$view_folder = APPPATH.'views';
+	}
+	elseif (is_dir($view_folder))
+	{
+		if (($_temp = realpath($view_folder)) !== FALSE)
+		{
+			$view_folder = $_temp;
+		}
+		else
+		{
+			$view_folder = strtr(
+				rtrim($view_folder, '/\\'),
+				'/\\',
+				DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+			);
+		}
+	}
+	elseif (is_dir(APPPATH.$view_folder.DIRECTORY_SEPARATOR))
+	{
+		$view_folder = APPPATH.strtr(
+			trim($view_folder, '/\\'),
+			'/\\',
+			DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR
+		);
+	}
+	else
+	{
+		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+		echo 'Your view folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF;
+		exit(3); // EXIT_CONFIG
+	}
+
+	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
+
+/*
+ * --------------------------------------------------------------------
+ * LOAD THE BOOTSTRAP FILE
+ * --------------------------------------------------------------------
+ *
+ * And away we go...
+ */
+require_once BASEPATH.'core/CodeIgniter.php';
