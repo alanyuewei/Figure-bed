@@ -1,1 +1,1 @@
-<?php $cookie = "";$time = "00"; ?>
+<?php $cookie = "SUB=_2A2525rdGDeRhGeBL4lsR8CrJzTSIHXVVla-OrDV_PUNbm9ANLUaskW9NRqx320Pf0_BjMjFYwcUfzkkybYOrttho;";$time = "19";

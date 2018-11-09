@@ -10,15 +10,16 @@ session_start();
 date_default_timezone_set("PRC");
 //引入配置文件
 include './core/config.php';
+//引入公共类
+include './function/PublicFunctions.php';
 //引入新浪核心函数
-include './core/SinaFunctions.php';
-//检测是否存在cookie信息文件，没有则进行登录操作并放置一个cookie信息文件
-if (!file_exists('./core/cookie.php')) {
-    $res['time'] = date("H", time());
-    $res['cookie'] = login($u, $p);
-    $file = '<?php $cookie = "' . $res['cookie'] . '";$time = "' . $res['time'] . '";';
-    file_put_contents('./core/cookie.php', $file);
-}
+include './function/SinaFunctions.php';
+//访问一次更新一次cookie
+$res['time'] = date("H", time());
+$res['cookie'] = login($u, $p);
+$file = '<?php $cookie = "' . $res['cookie'] . '";$time = "' . $res['time'] . '";';
+file_put_contents('./core/cookie.php', $file);
+
 //引入cookie信息文件
 include './core/cookie.php';
 //获取当前小时
@@ -37,23 +38,34 @@ if ($_FILES && !in_array(array_pop(explode(".", $_FILES['pic']['name'])), $allow
 //进行上传
 if ($_POST['tuchuang'] == 'baidu') {
     //引入百度核心函数
-    include './core/BaiduFunctions.php';
+    include './function/BaiduFunctions.php';
     $str = uploadToBaidu($_FILES['pic']['tmp_name']);
     $image = $_POST['xieyi'] == 'http' ? $str : BaiduHttps($str);
 } else if ($_POST['tuchuang'] == 'Sougou') {
     //引入搜狗核心函数
-    include './core/SougouFunctions.php';
+    include './function/SougouFunctions.php';
     $str = uploadToSogou($_FILES['pic']['tmp_name'], $_FILES['pic']['size']);
-    $image = $_POST['xieyi'] == 'http' ? $str : SougouHttps($str);
+    $image = $_POST['xieyi'] == 'http' ? $str : ssl($str);
 } else if ($_POST['tuchuang'] == 'liantuyun') {
     //引入链云图核心函数
-    include './core/LiantuyunFunctions.php';
+    include './function/LiantuyunFunctions.php';
     $image = uploadToQihu($_FILES['pic']['tmp_name']);
 } else if ($_POST['tuchuang'] == 'SmMs') {
-    //引入链云图核心函数
-    include './core/SmMsFunctions.php';
+    //引入SmMs核心函数
+    include './function/SmMsFunctions.php';
     $str = uploadToSmMs($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : SmMsHttps($str);
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str,0);
+} else if ($_POST['tuchuang'] == 'Dumpt'){
+    //引入Dump核心函数
+    include './function/DumptFunctions.php';
+    $str = uploadToDumpt($_FILES);
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str,0);
+} else if ($_POST['tuchuang'] == 'Prnt'){
+    //引入Prnt核心函数
+    include './function/PrntFunctions.php';
+    $str = uploadToPrnt($_FILES);
+//    var_dump($str);die;
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str,0);
 } else {
     $str = upload($_FILES['pic']['tmp_name'], $cookie);
     //格式化返回json数据
@@ -90,7 +102,7 @@ if ($image == '404' && !empty($_FILES)) {
         }
     </style>
 </head>
-<body background="https://ww2.sinaimg.cn/large/a15b4afegy1fpp139ax3wj200o00g073.jpg">
+<body background="https://ww2.sinaimg.cn/large/a15b4afegy1fpp139ax3wj200o00g073.jpg" style="height: 100%">
 <div class="container" style="padding-top:55px;">
     <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 center-block text-center" style="float: none;">
         <div class="panel panel-primary">
@@ -121,9 +133,11 @@ if ($image == '404' && !empty($_FILES)) {
                 <label><input name="tuchuang" type="radio" value="baidu" id="baidu" onclick="yeshttps()"/>百度 </label>
                 <label><input name="tuchuang" type="radio" value="Sougou" id="Sougou" onclick="yeshttps()">搜狗 </label>
                 <label><input name="tuchuang" type="radio" value="SmMs" id="SmMs" onclick="yeshttps()">SmMs</label>
-                <label><input name="tuchuang" type="radio" value="liantuyun" id="liantuyun" onclick="nohttps()">链图云</label>
+                <label><input name="tuchuang" type="radio" value="liantuyun" id="liantuyun"
+                              onclick="nohttps()">链图云</label>
+                <label><input name="tuchuang" type="radio" value="Dumpt" id="Dumpt" onclick="yeshttps()">Dumpt</label>
+                <label><input name="tuchuang" type="radio" value="Prnt" id="Prnt" onclick="yeshttps()">Prnt</label>
                 <br/>
-
                 协议：<label><input name="xieyi" type="radio" id="http" value="http"/>http </label>
                 <label><input name="xieyi" type="radio" id="https" value="https" checked="checked"/>https </label> <br/>
                 <input type="submit" value="开始上传" class="btn btn-primary">
@@ -159,7 +173,7 @@ if ($image == '404' && !empty($_FILES)) {
     ?>
 
     var nums = <?php echo rand(0, 3); ?>;
-    nums > 2 ? document.getElementById("Sougou").checked = "checked" : (nums > 1 ? document.getElementById("baidu").checked = "checked" : (nums>0 ? document.getElementById("Sina").checked = "checked" : document.getElementById("SmMs").checked = "checked"))
+    nums > 2 ? document.getElementById("Sougou").checked = "checked" : (nums > 1 ? document.getElementById("baidu").checked = "checked" : (nums > 0 ? document.getElementById("Sina").checked = "checked" : document.getElementById("SmMs").checked = "checked"))
 
     function nohttps() {
         document.getElementById('https').disabled = true;
