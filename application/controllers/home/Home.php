@@ -11,6 +11,7 @@ class Home extends Api
 {
     public function index()
     {
+
         session_start();
         $jumpapi = strtolower($this->input->post('tuchuang'));
         if (!empty($jumpapi)) {
