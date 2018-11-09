@@ -30,8 +30,3 @@ function uploadToSogou($file,$size)
     return $result;
 }
 
-function SougouHttps($url)
-{
-    return str_replace('http', 'https', $url);
-}
-

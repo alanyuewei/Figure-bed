@@ -54,19 +54,35 @@ if ($_POST['tuchuang'] == 'baidu') {
     //引入SmMs核心函数
     include './function/SmMsFunctions.php';
     $str = uploadToSmMs($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str,0);
-} else if ($_POST['tuchuang'] == 'Dumpt'){
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
+} else if ($_POST['tuchuang'] == 'Dumpt') {
     //引入Dump核心函数
     include './function/DumptFunctions.php';
     $str = uploadToDumpt($_FILES);
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str,0);
-} else if ($_POST['tuchuang'] == 'Prnt'){
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
+} else if ($_POST['tuchuang'] == 'Prnt') {
     //引入Prnt核心函数
     include './function/PrntFunctions.php';
     $str = uploadToPrnt($_FILES);
-//    var_dump($str);die;
-    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str,0);
-} else {
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
+} else if ($_POST['tuchuang'] == 'ooxx') {
+    //引入Ooxx核心函数
+    include './function/OoxxFunctions.php';
+    $str = uploadToOoxx($_FILES);
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
+} else if ($_POST['tuchuang'] == 'qihu') {
+    //引入奇虎核心函数
+    include './function/QihuFunctions.php';
+    $str = uploadToQihu($_FILES);
+    //var_dump($str);die;
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
+}else if ($_POST['tuchuang'] == 'renmin') {
+    //引入人民网核心函数
+    include './function/RenMinFunctions.php';
+    $str = uploadTorenmin($_FILES);
+    var_dump($str);die;
+    $image = $_POST['xieyi'] != 'http' ? $str : ssl($str, 0);
+}  else {
     $str = upload($_FILES['pic']['tmp_name'], $cookie);
     //格式化返回json数据
     $img = json_decode(($str), true);
@@ -132,9 +148,13 @@ if ($image == '404' && !empty($_FILES)) {
                 图床：<label><input name="tuchuang" type="radio" value="Sina" id="Sina" onclick="yeshttps()"/>新浪 </label>
                 <label><input name="tuchuang" type="radio" value="baidu" id="baidu" onclick="yeshttps()"/>百度 </label>
                 <label><input name="tuchuang" type="radio" value="Sougou" id="Sougou" onclick="yeshttps()">搜狗 </label>
+                <label><input name="tuchuang" type="radio" value="qihu" id="qihu" onclick="yeshttps()" disabled = false>奇虎 </label>
                 <label><input name="tuchuang" type="radio" value="SmMs" id="SmMs" onclick="yeshttps()">SmMs</label>
                 <label><input name="tuchuang" type="radio" value="liantuyun" id="liantuyun"
                               onclick="nohttps()">链图云</label>
+                <label><input name="tuchuang" type="radio" value="renmin" id="renmin"
+                              onclick="nohttps()">人民网</label>
+                <label><input name="tuchuang" type="radio" value="ooxx" id="ooxx" onclick="yeshttps()">OoXx</label>
                 <label><input name="tuchuang" type="radio" value="Dumpt" id="Dumpt" onclick="yeshttps()">Dumpt</label>
                 <label><input name="tuchuang" type="radio" value="Prnt" id="Prnt" onclick="yeshttps()">Prnt</label>
                 <br/>
