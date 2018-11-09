@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
+ * 新浪相册图片上传
  * User: 皮皮赖（https://www.52bz.la）
  * Date: 2018/11/8 0008
  * Time: 6:17

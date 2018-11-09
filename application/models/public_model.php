@@ -27,7 +27,9 @@ class public_model extends CI_Model
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -35,5 +37,11 @@ class public_model extends CI_Model
         $output = curl_exec($ch);
         curl_close($ch);
         return $output;
+    }
+
+    //判断是否是图片
+    public function is_imgs($type)
+    {
+        return strpos($type, 'image') == true ? 1 : 0 ;
     }
 }

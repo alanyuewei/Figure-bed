@@ -1,20 +1,21 @@
 <?php
 /**
- * ooxx图片上传
+ * mixtape图片上传
  * User: 皮皮赖（https://www.52bz.la）
  * Date: 2018/11/8 0008
- * Time: 6:02
+ * Time: 17:45
  */
 
-class ooxx_model extends CI_Model
+class mixtape_model extends CI_Model
 {
     public function url($tmp_name, $type, $name, $ssl)
     {
-        $url = 'https://ooxx.ooo/upload';
+        $url = 'https://mixtape.moe/upload.php';
         $post['files[]'] = curl_file_create(realpath($tmp_name), $type, $name);
         $this->load->model('public_model');
         $result = $this->public_model->public_curl($url, $post);
-        $ret = json_decode($result, 1);
-        return $this->public_model->ssl('https://i.ooxx.ooo/' . $ret[0], $ssl);
+        $newret = json_decode($result,1);
+        return $this->public_model->ssl($newret['files']['0']['url'], $ssl);;
+
     }
 }
