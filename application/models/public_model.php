@@ -44,4 +44,16 @@ class public_model extends CI_Model
     {
         return strpos($type, 'image') == true ? 1 : 0 ;
     }
+
+    //获取model api所有文件夹名缩写
+    public function file()
+    {
+        $file = dirname(__FILE__)."\api\api";
+        $dir = dirname($file);
+        $file = scandir($dir);
+        unset($file[0],$file[1]);
+        $niefile = str_replace('_model.php','',$file);
+
+        return $niefile;
+    }
 }
