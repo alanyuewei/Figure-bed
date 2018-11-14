@@ -39,7 +39,7 @@
             <div class="panel-heading" style="background: linear-gradient(to right,#8ae68a,#5ccdde,#b221ff);"><font
                         color="#000000">选择或拖拽一张图片开始上传...</font></div>
             <div class="panel-body text-center">
-                <form action="./" method="post" enctype="multipart/form-data">
+                <form action=".." method="post" enctype="multipart/form-data">
                     <center>
                         <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=369994633&amp;site=qq&amp;menu=yes"><img
                                     class="img-circle m-b-xs"
