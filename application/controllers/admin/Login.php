@@ -5,9 +5,9 @@
  * Date: 2018/11/9 0009
  * Time: 23:07
  */
-use app\controllers\admin\Confingdb;
+use app\controllers\Common;
 
-class Login extends Confingdb
+class Login extends Common
 {
     public function index()
     {
