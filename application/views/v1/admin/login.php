@@ -39,18 +39,18 @@
             var user = $("#username").val();
             var pass = $("#password").val();
             if(user=='') {
-                layer.msg('账号不能为空，请输入账号！');
+                layer.msg('账号不能为空！');
                 return false;
             }
             if(pass==''){
-                layer.msg('密码不能为空，请输入密码！');
+                layer.msg('密码不能为空！');
                 return false;
             }
             $.post("./login/verify", { username: user, password: pass },
                  function(data){
-                 alert(data);
-                });
-
+                 if (data['code'] == '404') return layer.msg(data['msg']);
+                 return location.href="home";
+                }, 'json');
             return true;
         }
     </script>

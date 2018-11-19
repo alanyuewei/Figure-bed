@@ -12,7 +12,7 @@ class Login extends Common
     public function index()
     {
         $this->load->view('v1/admin/public/header.php');
-        $this->load->view('v1/admin/login.php',$data);
+        $this->load->view('v1/admin/login.php');
     }
 
     public function verify()
@@ -20,8 +20,13 @@ class Login extends Common
         $user = $this->input->post('username');
         $pass = $this->input->post('password');
         $this->load->library('session');
-        if (empty($user) || empty($pass)) die($data['code'] = json_encode(['code'=>404,'msg'=>"账号密码不能为空"]));
-        
+        if (empty($user) || empty($pass)) die($data['code'] = json_encode(['code'=>404,'msg'=>"账号密码不能为空！"]));
+        $db_obj = $this->db->get_where('gather_set', ['id'=>'1'])->row();
+        $db_arr = $this->get_arr($db_obj);
+        $db_user = $this->get_new_str($db_arr['content']);
+        if ($db_user[0] != $user || $db_user[1] != $pass) die($data['code'] = json_encode(['code'=>404,'msg'=>"账号密码错误，请重新输入!"]));
+        $this->session->set_userdata(['user'=>$db_user[0]]);
+        if (!$this->exist_session('user')) die(json_encode(['code'=>404,'msg'=>"出现未知错误，请重试"]));
         return die(json_encode(['code'=>200,'msg'=>"登录成功"]));
     }
 }
