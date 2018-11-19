@@ -1,7 +1,7 @@
 ## 💖项目(Project)：
 集成图床（integrated graph bed）
 
-## 💗简介(intro)：
+## 💛简介(intro)：
 这是一个集成网络存储的外链网站，可以不费您的服务器空间资源存储图片生成外链。<br/>
 (Summary: this is an integrated network storage of external links, you can not charge your server space storage picture to generate external links.)
 
