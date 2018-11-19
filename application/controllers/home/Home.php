@@ -22,6 +22,6 @@ class Home extends Api
             $data['notice'] = 1;
             $_SESSION['notice'] = time() + 360;
             $data['noticeval'] = '"图床V1.5更新<br/>1、从原生改为 CodeIgniter 框架<br/>2、新增京东，淘宝，Mixtape接口<br/><br/>国内高速接口：新浪，百度，搜狗，京东<br/>国外高速接口：OoXx，Dump，Prnt<br/>温馨提示：http可能存在防盗链，推荐使用https", {icon: 7}';        }
-        $this->load->view('home/v1/home_index.php', $data);
+        $this->load->view('v1/home/index.php', $data);
     }
 }
