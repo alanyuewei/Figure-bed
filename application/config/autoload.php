@@ -52,13 +52,13 @@ $autoload['packages'] = array();
 | Prototype:
 |
 |	$autoload['libraries'] = array('database', 'email', 'session');
-|
+|cookie_domain
 | You can also supply an alternative library name to be assigned
 | in the controller:
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('database','session');
+$autoload['libraries'] = ['database','session'];
 
 /*
 | -------------------------------------------------------------------

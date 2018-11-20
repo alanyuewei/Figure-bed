@@ -28,7 +28,7 @@ class Common extends CI_Controller
 
     public function exist_session($string)
     {
-        $exist_session = empty($_SESSION[$string]) ? 0 : 1;
+        $exist_session = empty($string) ? 0 : 1;
         return $exist_session;
     }
 }

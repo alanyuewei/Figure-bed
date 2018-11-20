@@ -9,12 +9,14 @@ use app\controllers\Common;
 
 class Login extends Common
 {
+    //登陆页
     public function index()
     {
         $this->load->view('v1/admin/public/header.php');
         $this->load->view('v1/admin/login.php');
     }
 
+    //登陆
     public function verify()
     {
         $user = $this->input->post('username');

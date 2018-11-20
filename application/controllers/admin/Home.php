@@ -10,10 +10,18 @@ use app\controllers\Common;
 
 class Home extends Common
 {
+    //判断登陆
+    public function login_on()
+    {
+        $login_on = $this->exist_session($_SESSION['user']);
+        if (!$login_on) header("location:login");
+    }
+
+    //后台首页
     public function index()
     {
-        $login_on =  $this->exist_session('user');
-        $ret = $login_on ? '登录成功' : "登录失败";
-        echo $ret;
+        $this->login_on();
+        $this->load->view('v1/admin/public/header.php');
+        $this->load->view('v1/admin/index.php');
     }
 }
