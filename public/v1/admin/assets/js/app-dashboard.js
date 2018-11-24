@@ -148,7 +148,7 @@ var App = (function () {
         [9, 30]
       ];
 
-      var plot_statistics = $.plot("#main-chart", 
+      var plot_statistics = $.plot("#main-chart",
         [
         {
           data: data, 
@@ -255,6 +255,7 @@ var App = (function () {
         },
         legend:{
           show: false
+
         },
         colors: [color1, color2, color3]
       });

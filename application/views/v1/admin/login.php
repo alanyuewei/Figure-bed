@@ -49,7 +49,7 @@
             $.post("./login/verify", { username: user, password: pass },
                  function(data){
                  if (data['code'] == '404') return layer.msg(data['msg']);
-                 return location.href="home";
+                 return location.href="./";
                 }, 'json');
             return true;
         }

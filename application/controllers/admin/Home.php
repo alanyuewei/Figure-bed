@@ -10,18 +10,24 @@ use app\controllers\Common;
 
 class Home extends Common
 {
-    //判断登陆
-    public function login_on()
-    {
-        $login_on = $this->exist_session($_SESSION['user']);
-        if (!$login_on) header("location:login");
-    }
-
     //后台首页
     public function index()
     {
-        $this->login_on();
-        $this->load->view('v1/admin/public/header.php');
-        $this->load->view('v1/admin/index.php');
+        $this->admin_exist_session(0,'./login',0 );
+        $this->admin_public_views();
+        $db_num = $this->db->get_where('gather_set', ['id'=>'2'])->row();
+        $db_arr = $this->get_arr($db_num);
+        $this->load->model('public_model');
+        $db['update'] = $this->public_model->Revisions();
+        $db['img_num'] = $this->get_new_str($db_arr['content']);
+        $this->load->view('v1/admin/index.php',$db);
+    }
+
+    public function  ce()
+    {
+        $this->load->model('public_model');
+        $db = $this->public_model->Revisions();
+        echo "<pre>";
+        var_dump($db);
     }
 }
