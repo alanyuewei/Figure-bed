@@ -39,16 +39,16 @@
             var user = $("#username").val();
             var pass = $("#password").val();
             if(user=='') {
-                layer.msg('账号不能为空！');
+                layer.alert('账号不能为空！');
                 return false;
             }
             if(pass==''){
-                layer.msg('密码不能为空！');
+                layer.alert('密码不能为空！');
                 return false;
             }
             $.post("./login/verify", { username: user, password: pass },
                  function(data){
-                 if (data['code'] == '404') return layer.msg(data['msg']);
+                 if (data['code'] == '404') return layer.alert(data['msg']);
                  return location.href="./";
                 }, 'json');
             return true;

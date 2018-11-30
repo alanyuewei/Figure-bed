@@ -166,7 +166,7 @@
                             <div class="timeline-content">
                                 <div class="timeline-avatar"><img src="https://github.com/fluidicon.png" alt="Avatar" class="circle"></div>
                                 <div class="timeline-header">                                    <div class="timeline-summary">
-                                        <p>最新版本<?= $update[0][1]?>：<a href="https://codeload.github.com/ThedoRap/Figure-bed">点击下载</a>丨联系作者：<a href="https://www.52bz.la">皮皮赖</a>&&<a href="https://www.yyhy.me/">烟雨寒云</a></p>
+                                        <p>最新版本<?= $update[0][1]?>：<a href="https://github.com/ThedoRap/Figure-bed">点击下载</a>丨联系作者：<a href="https://www.52bz.la">皮皮赖</a>&&<a href="https://www.yyhy.me/">烟雨寒云</a></p>
                                     </div>
                                 </div>
                             </div>

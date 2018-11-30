@@ -37,13 +37,32 @@ class Common extends CI_Controller
     //后台默认公共头
     public function admin_public_views($list = "1")
     {
+        $title = $this->array_where_select('id',[3,4],'gather_set');
+        $header['title'] = $title[0]['content'].'-'.$title[1]['content'];
+        $this->load->view('v1/admin/public/header.php',$header);
         if ($list)
         {
-            $this->load->view('v1/admin/public/header.php');
             $this->load->view('v1/admin/public/list.php');
-        }else{
-            $this->load->view('v1/admin/public/header.php');
         }
+    }
+
+    //获取接口
+    public function file_model()
+    {
+        $this->load->model('public_model');
+        $ret = $this->public_model->file();
+        return $ret;
+    }
+
+    //批量查询
+    public function  array_where_select($key,$val,$get)
+    {
+        foreach ($val as $value)
+        {
+            $db_obj = $this->db->where_in($key,$value)->get($get)->row_array();
+            $db[] = $db_obj;
+        }
+        return $db;
     }
 
 }

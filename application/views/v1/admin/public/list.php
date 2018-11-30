@@ -90,37 +90,17 @@
     </div>
 </nav>
 <div class="be-left-sidebar">
-    <div class="left-sidebar-wrapper"><a href="#" class="left-sidebar-toggle">首页</a>
+    <div class="left-sidebar-wrapper"><a href="/admin" class="left-sidebar-toggle">首页</a>
         <div class="left-sidebar-spacer">
             <div class="left-sidebar-scroll">
                 <div class="left-sidebar-content">
                     <ul class="sidebar-elements">
                         <li class="divider">菜单</li>
-                        <li class="active"><a href="index.html"><i class="icon mdi mdi-home"></i><span>首页</span></a>
+                        <li class="active"><a href="./"><i class="icon mdi mdi-home"></i><span>首页</span></a>
                         </li>
                         <li class="parent"><a href="#"><i class="icon mdi mdi-face"></i><span>设置</span></a>
                             <ul class="sub-menu">
-                                <li><a href="ui-alerts.html">Alerts</a>
-                                </li>
-                                <li><a href="ui-buttons.html">Buttons</a>
-                                </li>
-                                <li><a href="ui-panels.html">Panels</a>
-                                </li>
-                                <li><a href="ui-general.html">General</a>
-                                </li>
-                                <li><a href="ui-modals.html">Modals</a>
-                                </li>
-                                <li><a href="ui-notifications.html">Notifications</a>
-                                </li>
-                                <li><a href="ui-icons.html">Icons</a>
-                                </li>
-                                <li><a href="ui-grid.html">Grid</a>
-                                </li>
-                                <li><a href="ui-tabs-accordions.html">Tabs &amp; Accordions</a>
-                                </li>
-                                <li><a href="ui-nestable-lists.html">Nestable Lists</a>
-                                </li>
-                                <li><a href="ui-typography.html"><span class="label label-primary pull-right">New</span>Typography</a>
+                                <li><a href="./setting">基本设置</a>
                                 </li>
                             </ul>
                         </li>
