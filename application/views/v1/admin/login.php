@@ -5,7 +5,7 @@
         <div class="main-content container-fluid">
           <div class="splash-container">
             <div class="panel panel-default panel-border-color panel-border-color-primary">
-              <div class="panel-heading"><img src="/public/v1/admin/assets/img/logo-xx.png" alt="logo" width="102" height="27" class="logo-img"><span class="splash-description">请输入后台账号密码</span></div>
+              <div class="panel-heading"><img src="<?=$logo?>" alt="logo" width="102" height="27" class="logo-img"><span class="splash-description">请输入后台账号密码</span></div>
               <div class="panel-body">
                   <div class="form-group">
                     <input id="username" type="text" placeholder="账号" autocomplete="off" class="form-control">

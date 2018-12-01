@@ -10,7 +10,7 @@
 <div class="be-wrapper be-fixed-sidebar">
 <nav class="navbar navbar-default navbar-fixed-top be-top-header">
     <div class="container-fluid">
-        <div class="navbar-header"><a href="index.html" class="navbar-brand"></a></div>
+        <div class="navbar-header"><img src="<?=$logo?>" alt="" class="navbar-brand"></div>
         <div class="be-right-navbar">
             <ul class="nav navbar-nav navbar-right be-user-nav">
                 <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><img src="/public/v1/admin/assets/img/avatar.png" alt="Avatar"><span class="user-name">Túpac Amaru</span></a>
@@ -101,6 +101,8 @@
                         <li class="parent"><a href="#"><i class="icon mdi mdi-face"></i><span>设置</span></a>
                             <ul class="sub-menu">
                                 <li><a href="./setting">基本设置</a>
+                                </li>
+                                <li><a href="./Identification">账号设置</a>
                                 </li>
                             </ul>
                         </li>

@@ -37,8 +37,9 @@ class Common extends CI_Controller
     //后台默认公共头
     public function admin_public_views($list = "1")
     {
-        $title = $this->array_where_select('id',[3,4],'gather_set');
-        $header['title'] = $title[0]['content'].'-'.$title[1]['content'];
+        $public_db = $this->array_where_select('id',[3,4,6],'gather_set');
+        $header['title'] = $public_db[0]['content'].'-'.$public_db[1]['content'];
+        $header['logo'] = $public_db[2]['content'];
         $this->load->view('v1/admin/public/header.php',$header);
         if ($list)
         {

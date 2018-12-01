@@ -37,20 +37,26 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">网站关键词</label>
                                     <div class="col-sm-6">
-                                        <input type="text" required="" data-parsley-maxlength="6" placeholder="例:图床,新浪图床" class="form-control" id="keyword" value="<?= $val['2']['content']?>">
+                                        <input type="text" required="" data-parsley-maxlength="6" placeholder="例:https://img04.sogoucdn.com/app/a/100520146/aa945dac2ba5f54d3846ad8652345bd1" class="form-control" id="keyword" value="<?= $val['2']['content']?>">
                                     </div>
                                 </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">LOGO</label>
+                                <div class="col-sm-6">
+                                    <input type="text" required="" data-parsley-maxlength="6" placeholder="" placeholder="例:图床,皮皮赖"  class="form-control" id="logo" value="<?=$val['3']['content']?>">
+                                </div>
+                            </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">图片格式</label>
                                     <div class="col-sm-6">
-                                        <input type="text" required="" data-parsley-length="[5,10]" placeholder="例:.jpg,.gif" class="form-control" id="format" value="<?= $val['3']['content']?>">
+                                        <input type="text" required="" data-parsley-length="[5,10]" placeholder="例:.jpg,.gif" class="form-control" id="format" value="<?= $val['4']['content']?>">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">鉴黄功能</label>
                                     <div class="col-sm-6">
                                         <div class="be-checkbox">
-                                                <input <?php if($val['4']['content']) echo 'checked="checked"'  ?> id="Level-3-piece" name="Level-3-piece" type="checkbox" data-parsley-multiple="groups" value="1" data-parsley-mincheck="2" data-parsley-errors-container="#error-container1" id="Level-3-piec" >
+                                                <input <?php if($val['5']['content']) echo 'checked="checked"'  ?> id="Level-3-piece" name="Level-3-piece" type="checkbox" data-parsley-multiple="groups" value="1" data-parsley-mincheck="2" data-parsley-errors-container="#error-container1" id="Level-3-piec" >
                                                 <label for="Level-3-piece">开/关</label>
                                         </div>
                                         <div id="error-container2"></div>
@@ -66,7 +72,7 @@
                                                 <button type="button" data-dismiss="alert" aria-label="Close" class="close"><span aria-hidden="true" class="mdi mdi-close"></span></button><strong>温馨提示：</strong>目前支持的接口有： <?php foreach ($file_name as $item):?><?= $item?>,<?php endforeach;?>
                                             </div>
                                         </div>
-                                                <input type="text" required=""  class="form-control" value="<?php foreach ($file_name as $item):?><?= $item?>,<?php endforeach;?>" id="imgsapi">
+                                                <input type="text" required=""  class="form-control" value="<?= $val['6']['content']?>" id="imgsapi">
                                         <div id="error-container2"></div>
                                     </div>
                                 </div>
@@ -97,6 +103,7 @@
     function check(form) {
         var title = $("#title").val();
         var describe = $("#describe").val();
+        var logo = $("#logo").val();
         var keyword = $("#keyword").val();
         var format = $('#format').val();
         var imgsapi = $('#imgsapi').val();
@@ -115,6 +122,11 @@
             layer.alert('网站关键词不能为空！');
             return false;
         }
+        if (logo == "")
+        {
+            layer.alert('网站描述不能为空！');
+            return false;
+        }
         if (format == "")
         {
             layer.alert('图片格式不能为空！');
@@ -125,7 +137,7 @@
             layer.alert('图片接口不能为空！');
             return false;
         }
-        $.post("./setting/update", { title: title, describe: describe, keyword:keyword,format:format,imgsapi:imgsapi,identify:identify},
+        $.post("./setting/update", { title: title, describe: describe, keyword:keyword,format:format,imgsapi:imgsapi,identify:identify,logo:logo},
             function(data){
                 return layer.alert(data['msg']);
             }, 'json');

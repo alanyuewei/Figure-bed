@@ -12,15 +12,17 @@ class Setting extends Common
 {
     public function  index()
     {
+        $this->admin_exist_session(0,'./login',0 );
         $db['file_name'] = $this->file_model();
-        $db['val'] = $this->array_where_select('id',[3,4,5,6,7],'gather_set');
+        $db['val'] = $this->array_where_select('id',[3,4,5,6,7,8,9],'gather_set');
         $this->admin_public_views();
         $this->load->view('v1/admin/setting.php',$db);
     }
 
     public function update()
     {
-        $post = $this->input->post(['title','describe','keyword','format','identify','imgsapi']);
+        $this->admin_exist_session(0,'./login',0 );
+        $post = $this->input->post(['title','describe','keyword','logo','format','identify','imgsapi']);
         $i=0;
         foreach ($post as $key => $value)
         {
@@ -30,10 +32,5 @@ class Setting extends Common
             $this->db->update('gather_set', $data, "id = $newi");
         }
         die(json_encode(['code'=>200,'msg'=>"更新成功"]));
-    }
-
-    public function  ce()
-    {
-        $this->admin_public_views();
     }
 }
